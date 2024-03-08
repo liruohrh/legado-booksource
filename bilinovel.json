@@ -1,0 +1,54 @@
+{
+    "bookSourceComment": "# 使用者注意\n1. 搜索可能为空，重新搜索即可\n2. 正文可能会经常出现503的报错（不太清楚，可能是APP源码发送请求太频繁）。解决方法：拉到这个章节（注意底部标题和出错的这个章节的标题一样），单击唤起菜单，点击底部刷新按钮。如果不行等一会重试（不要太快）。\n3. 图片有时候看不了，可能需要翻墙，也可能是网速太慢了\n\n\n# 书源编辑注意\n1. 搜索页：必须要cookie.key=haha，而且时限只有几分钟。\n2. 自己的配置中，翻页动画必须得是滑动的才能看见图片，如果不是滑动的，在设置为滑动前先在到详情页清除缓存。\n3. User-Agent：必须包含手机标识\n    1. 获取方法：在浏览器切换为mobile模式后的User-Agent\n4. 章节页：需要Host，Accept-Language\n    1. 图片：需要Referer（可能需要科学上网才能访问图片）\n    2. 在翻页规则中，有时候会报错，debug发现通常是503，可能并发太高了，用户自己在本页多刷新一下或者等待一下刷新即可\n        1. 这个503错误有很多，只是大多数都可以无视，但是这里因为需要下一页URL，因此无法无视\n5. 正文字符替换：\n    1. 在正文页body后有一个readtool.js，最后有一些hex字符（JS方法名）和一堆unicode码点（Js替换正文字符代码）。\n    2. 假设encodeJS那一堆unicode码点，如果方法名没变的情况下\nString.fromCharCode(...encodeJS.split(/[a-zA-Z]{1,}/))，这个返回值就是Js替换代码。\n不需要执行[].filter.constructor(JS)();来创建一个Function传入Js字符串代码执行这个Function对象。\n    3. 目前104个替换值，如果没有变则应该不需要改。\n替换代码形式如 ：replace(new RegExp(\"\", \"gi\"), \"一\")\n\n# 更新\n## 2024/3/8：\n1. 正文: Accept-Encoding=gzip，Cookie=night=0，\nAccept=text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8。\n但是在这里好像只需要加Accept即可\n\n",
+    "bookSourceGroup": "我的小说",
+    "bookSourceName": "哔哩哔哩轻小说mobile",
+    "bookSourceType": 2,
+    "bookSourceUrl": "https://www.bilinovel.com",
+    "customOrder": 0,
+    "enabled": true,
+    "enabledCookieJar": true,
+    "enabledExplore": true,
+    "exploreUrl": "[\n  {\n    url: \"\",\n    title: \"排行榜\",\n    style: { layout_flexBasisPercent: 1, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/monthvisit/{{page}}.html\",\n    title: \"月点击榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/weekvisit/{{page}}.html\",\n    title: \"周点击榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/monthvote/{{page}}.html\",\n    title: \"月推荐榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/weekvote/{{page}}.html\",\n    title: \"周推荐榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/monthflower/{{page}}.html\",\n    title: \"月鲜花榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/weekflower/{{page}}.html\",\n    title: \"周鲜花榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/monthegg/{{page}}.html\",\n    title: \"月鸡蛋榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/weekegg/{{page}}.html\",\n    title: \"周鸡蛋榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/lastupdate/{{page}}.html\",\n    title: \"最近更新\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/postdate/{{page}}.html\",\n    title: \"最新入库\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/goodnum/{{page}}.html\",\n    title: \"收藏榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  },\n  {\n    url: \"https://www.bilinovel.com/top/newhot/{{page}}.html\",\n    title: \"新书榜\",\n    style: { layout_flexBasisPercent: 0.3, layout_flexGrow: 1 }\n  }\n]\n",
+    "header": "{'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1'}",
+    "jsLib": "var map = new java.util.HashMap();\nmap.put(\"“\", \"「\");\nmap.put(\"”\", \"」\");\nmap.put(\"‘\", \"『\");\nmap.put(\"’\", \"』\");\nmap.put(\"\", \"的\");\nmap.put(\"\", \"一\");\nmap.put(\"\", \"是\");\nmap.put(\"\", \"了\");\nmap.put(\"\", \"我\");\nmap.put(\"\", \"不\");\nmap.put(\"\", \"人\");\nmap.put(\"\", \"在\");\nmap.put(\"\", \"他\");\nmap.put(\"\", \"有\");\nmap.put(\"\", \"这\");\nmap.put(\"\", \"个\");\nmap.put(\"\", \"上\");\nmap.put(\"\", \"们\");\nmap.put(\"\", \"来\");\nmap.put(\"\", \"到\");\nmap.put(\"\", \"时\");\nmap.put(\"\", \"大\");\nmap.put(\"\", \"地\");\nmap.put(\"\", \"为\");\nmap.put(\"\", \"子\");\nmap.put(\"\", \"中\");\nmap.put(\"\", \"你\");\nmap.put(\"\", \"说\");\nmap.put(\"\", \"生\");\nmap.put(\"\", \"国\");\nmap.put(\"\", \"年\");\nmap.put(\"\", \"着\");\nmap.put(\"\", \"就\");\nmap.put(\"\", \"那\");\nmap.put(\"\", \"和\");\nmap.put(\"\", \"要\");\nmap.put(\"\", \"她\");\nmap.put(\"\", \"出\");\nmap.put(\"\", \"也\");\nmap.put(\"\", \"得\");\nmap.put(\"\", \"里\");\nmap.put(\"\", \"后\");\nmap.put(\"\", \"自\");\nmap.put(\"\", \"以\");\nmap.put(\"\", \"会\");\nmap.put(\"\", \"家\");\nmap.put(\"\", \"可\");\nmap.put(\"\", \"下\");\nmap.put(\"\", \"而\");\nmap.put(\"\", \"过\");\nmap.put(\"\", \"天\");\nmap.put(\"\", \"去\");\nmap.put(\"\", \"能\");\nmap.put(\"\", \"对\");\nmap.put(\"\", \"小\");\nmap.put(\"\", \"多\");\nmap.put(\"\", \"然\");\nmap.put(\"\", \"于\");\nmap.put(\"\", \"心\");\nmap.put(\"\", \"学\");\nmap.put(\"\", \"么\");\nmap.put(\"\", \"之\");\nmap.put(\"\", \"都\");\nmap.put(\"\", \"好\");\nmap.put(\"\", \"看\");\nmap.put(\"\", \"起\");\nmap.put(\"\", \"发\");\nmap.put(\"\", \"当\");\nmap.put(\"\", \"没\");\nmap.put(\"\", \"成\");\nmap.put(\"\", \"只\");\nmap.put(\"\", \"如\");\nmap.put(\"\", \"事\");\nmap.put(\"\", \"把\");\nmap.put(\"\", \"还\");\nmap.put(\"\", \"用\");\nmap.put(\"\", \"第\");\nmap.put(\"\", \"样\");\nmap.put(\"\", \"道\");\nmap.put(\"\", \"想\");\nmap.put(\"\", \"作\");\nmap.put(\"\", \"种\");\nmap.put(\"\", \"开\");\nmap.put(\"\", \"美\");\nmap.put(\"\", \"乳\");\nmap.put(\"\", \"阴\");\nmap.put(\"\", \"液\");\nmap.put(\"\", \"茎\");\nmap.put(\"\", \"欲\");\nmap.put(\"\", \"呻\");\nmap.put(\"\", \"肉\");\nmap.put(\"\", \"交\");\nmap.put(\"\", \"性\");\nmap.put(\"\", \"胸\");\nmap.put(\"\", \"私\");\nmap.put(\"\", \"穴\");\nmap.put(\"\", \"淫\");\nmap.put(\"\", \"臀\");\nmap.put(\"\", \"舔\");\nmap.put(\"\", \"射\");\nmap.put(\"\", \"脱\");\nmap.put(\"\", \"裸\");\nmap.put(\"\", \"骚\");\nmap.put(\"\", \"唇\");\n\nfunction replContent(content) {\n  return content.replace(/[“”‘’\\ue800-\\ue863]/gi, (matchStr) =>\n    String(map.get(matchStr))\n  );\n}\n",
+    "lastUpdateTime": 1709833679636,
+    "respondTime": 180000,
+    "ruleBookInfo": {
+        "intro": "@css:content@text",
+        "lastChapter": "@css:.book-status > div.book-meta-r > p@text",
+        "tocUrl": "@css:.book-status@href",
+        "wordCount": "@css:.book-detail-info > div > div.book-cell > p:nth-child(4)@ownText##连载"
+    },
+    "ruleContent": {
+        "content": "<js>\ncels = java.getElements(\"@css: #acontentz > p,img[data-src],img.imagecontent\");\ncHtml='';\nimg=\"\";\nfor(let i in cels){\n  if(cels[i].tagName().equals('img')){ \n    url=cels[i].attr('data-src');\n    if(url.equals('')){\n      url=cels[i].attr('src');\n    }\n     cHtml += '<img src=\"' + url + \",{ 'headers': {'Referer': 'https://www.bilinovel.com/', 'Host': 'img3.readpai.com'}}\" + '\"/>\\n';\n  }else{\n     cHtml += '<p>' + cels[i].text() +'</p >\\n';\n  }\n}\ncHtml\n</js>",
+        "imageStyle": "FULL",
+        "nextContentUrl": "<js>\nscriptEls = java.getElements('@css: body > script:first-child');\ntry{\n    scriptStr = scriptEls[0].data();\n   }catch(e){\n    throw new Error(\"content page, page turning rule:  maybe crawl too fast, please refresh this page, if has not effect, please wait a moment to refresh\" \n+ '      scriptEls==' + scriptEls \n+ \",   page html==\" + result \n+ \",   err=\" + e);\n  }\nrp=eval(scriptStr  + ';ReadParams;');\nif(rp.url_next.search(rp.chapterid) !== -1){\nrp.url_next + \",{'headers': {'Host': 'www.bilinovel.com','Accept-Language':'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5','User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1','Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'}}\";\n}\n</js>",
+        "replaceRegex": "<js>\nreplContent(result)\n</js>",
+        "webJs": ""
+    },
+    "ruleExplore": {
+        "author": "@css:.book-author@ownText",
+        "bookList": "@css:.book-li",
+        "bookUrl": "@css:a@href",
+        "coverUrl": "@css:.book-cover > img@data-src",
+        "intro": "@css:p.book-intro@text",
+        "name": "@css:.book-title@text"
+    },
+    "ruleReview": {},
+    "ruleSearch": {
+        "author": "@css:.book-author@ownText",
+        "bookList": "@css:.book-li",
+        "bookUrl": "@css:a@href",
+        "coverUrl": "@css:.book-cover > img@data-src",
+        "intro": "@css:p.book-desc@text",
+        "kind": "@css:.book-meta-r@text",
+        "name": "@css:.book-title@text"
+    },
+    "ruleToc": {
+        "chapterList": "<js>\nlis=java.getElements(\"@css:li.chapter-li\");\ncv=\"\";\ncps=[];\nfor(let i in lis){\n\tif(lis[i].attr(\"class\").contains(\"chapter-bar\")){\n\t\tcv=lis[i].text();\n\t\t}else if( lis[i].attr(\"class\").contains(\"jsChapter\")){\n\t\t\ta=lis[i].select(\"a\");\n\t  cps.push({\n\t  \tname: cv + \" \" + a.text(),\n\t  \turl: a.attr(\"href\")\n\t  \t})\n\t}\n}\ncps\n</js>",
+        "chapterName": "name",
+        "chapterUrl": "url##$##,{'headers': {\n'Host': 'www.bilinovel.com',\n 'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5',\n 'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1 Edg/122.0.0.0',\n'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'\n}}"
+    },
+    "searchUrl": "https://www.bilinovel.com/search/{{key}}_{{page}}.html,{\"webView\": true}",
+    "weight": 0
+}
