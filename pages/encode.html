@@ -449,8 +449,6 @@
                     return base64Decode(input);
                 case 'url':
                     return urlDecode(input);
-                case 'utf8':
-                    return utf8Decode(input);
                 case 'unicode':
                     return unicodeDecode(input);
                 default:
@@ -507,31 +505,24 @@
             downloadBtn.style.display = 'inline-block';
 
             // 设置下载文件名
-            let downloadFileName = 'output';
-
+            let downloadFileName = '';
             if (originalFileName) {
                 // 移除文件扩展名
                 const lastDotIndex = originalFileName.lastIndexOf('.');
                 const baseName = lastDotIndex !== -1 ? originalFileName.substring(0, lastDotIndex) : originalFileName;
                 const extension = lastDotIndex !== -1 ? originalFileName.substring(lastDotIndex) : '';
 
-                // 检查文件名是否已经以编码方式结尾
-                const encodingSuffix = '_' + outputEncoding.value;
-                const lowerBaseName = baseName.toLowerCase();
-
                 if (outputEncoding.value === 'plain') {
-                    downloadFileName = baseName + '_de' + extension;
-                } else if (!lowerBaseName.endsWith('_' + outputEncoding.value.toLowerCase())) {
-                    downloadFileName = baseName + '_' + outputEncoding.value + extension;
-                } else {
                     downloadFileName = baseName + extension;
+                } else {
+                    downloadFileName = baseName + '.' + outputEncoding.value + extension;
                 }
             } else {
                 // 没有原始文件名
                 if (outputEncoding.value === 'plain') {
-                    downloadFileName = 'decoded.txt';
+                    downloadFileName = 'output.txt';
                 } else {
-                    downloadFileName = 'decoded_' + outputEncoding.value + '.txt';
+                    downloadFileName = 'output' + "." + outputEncoding.value + '.txt';
                 }
             }
 
@@ -560,7 +551,10 @@
                     return;
                 }
                 try {
-                    const encoded = encodeWithMethod(input, outputEncoding.value);
+                    // 先解码输入
+                    plainValue = decodeWithMethod(input, inputEncoding.value);
+
+                    const encoded = encodeWithMethod(plainValue, outputEncoding.value);
                     outputText.value = encoded;
                     updateDownloadButton();
                 } catch (error) {
@@ -588,6 +582,11 @@
             encodeBtn.classList.remove('btn-primary');
 
             const processInput = (input) => {
+                if (!input) {
+                    showError("必须有输入");
+                    return;
+                }
+
                 try {
                     // 先解码输入
                     plainValue = decodeWithMethod(input, inputEncoding.value);
