@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编解码工具</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5a80;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .input-section,
+        .output-section {
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .format-select {
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ced4da;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ced4da;
+            resize: vertical;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        #output-text.copied {
+            border-color: #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+        }
+
+        #output-text.error {
+            border-color: #f44336;
+            box-shadow: 0 0 8px rgba(244, 67, 54, 0.3);
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .file-checkbox-container {
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .file-checkbox {
+            margin-right: 10px;
+        }
+
+        .file-input-wrapper {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--light-color);
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-name {
+            margin-left: 10px;
+            font-style: italic;
+        }
+
+        .download-btn {
+            text-decoration: none;
+            padding: 8px 16px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+        }
+
+        .download-btn:hover {
+            background-color: #218838;
+        }
+
+        .alert {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>编解码工具</h1>
+
+        <div class="btn-group">
+            <button id="encode-btn" class="btn btn-primary">编码</button>
+            <button id="decode-btn" class="btn btn-secondary">解码</button>
+        </div>
+
+        <div id="alert" class="alert alert-danger"></div>
+
+        <div class="input-section">
+            <div class="section-header">
+                <h2 class="section-title">输入</h2>
+                <div style="display: flex; flex-direction: row;">
+                    <div class="file-checkbox-container">
+                        <input type="checkbox" id="use-file-input" class="file-checkbox">
+                        <label for="use-file-input">上传文件</label>
+                    </div>
+                    <select id="input-encoding" class="format-select">
+                        <option value="base16">Base16 (Hex)</option>
+                        <!-- 其他编码选项将通过JavaScript动态添加 -->
+                    </select>
+                </div>
+            </div>
+            <div class="input-container">
+                <textarea id="input-text" placeholder="请输入要编码或解码的内容..."></textarea>
+                <div id="file-input-wrapper" class="file-input-wrapper">
+                    <label for="input-file" class="file-input-label">选择文件</label>
+                    <input type="file" id="input-file" class="file-input">
+                    <span id="file-name" class="file-name">未选择文件</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <div class="section-header">
+                <h2 class="section-title">输出</h2>
+                <select id="output-encoding" class="format-select">
+                    <option value="base16">Base16 (Hex)</option>
+                    <!-- 其他编码选项将通过JavaScript动态添加 -->
+                </select>
+            </div>
+            <textarea id="output-text" placeholder="编码或解码的结果将显示在这里..." readonly></textarea>
+            <div style="margin-top: 10px;">
+                <a id="download-btn" class="download-btn" download="output.txt">下载结果</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const encodeBtn = document.getElementById('encode-btn');
+        const decodeBtn = document.getElementById('decode-btn');
+        const inputEncoding = document.getElementById('input-encoding');
+        const outputEncoding = document.getElementById('output-encoding');
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const useFileInput = document.getElementById('use-file-input');
+        const fileInputWrapper = document.getElementById('file-input-wrapper');
+        const inputFile = document.getElementById('input-file');
+        const fileName = document.getElementById('file-name');
+        const downloadBtn = document.getElementById('download-btn');
+        const alert = document.getElementById('alert');
+
+        // 存储原始解码结果
+        let plainValue = '';
+        let currentMode = 'encode'; // 'encode' 或 'decode'
+        let originalFileName = '';
+
+        // 检查并添加浏览器支持的编码
+        const supportedEncodings = [
+            { id: 'plain', name: 'UTF8文本', supported: true },
+            { id: 'base16', name: 'Base16 (Hex)', supported: true },
+            { id: 'base64', name: 'Base64', supported: typeof btoa === 'function' },
+            { id: 'url', name: 'URL', supported: typeof encodeURIComponent === 'function' },
+        ];
+
+        // 初始化编码选项
+        function initEncodingOptions() {
+            // 清空现有选项
+            inputEncoding.innerHTML = '';
+            outputEncoding.innerHTML = '';
+
+            // 添加支持的编码选项
+            if (typeof TextEncoder !== 'function') {
+                showError("浏览器不支持UTF8，TextEncoder。无法使用");
+                return;
+            }
+            supportedEncodings.forEach(encoding => {
+                if (encoding.supported) {
+                    const inputOption = document.createElement('option');
+                    inputOption.value = encoding.id;
+                    inputOption.textContent = encoding.name;
+                    inputEncoding.appendChild(inputOption);
+
+                    const outputOption = document.createElement('option');
+                    outputOption.value = encoding.id;
+                    outputOption.textContent = encoding.name;
+                    outputEncoding.appendChild(outputOption);
+                }
+            });
+        }
+
+        // 初始化页面
+        initEncodingOptions();
+
+        // 监听文件复选框变化
+        useFileInput.addEventListener('change', function () {
+            if (this.checked) {
+                inputText.value = '';
+                inputText.style.display = 'none';
+                fileInputWrapper.style.display = 'block';
+            } else {
+                fileInputWrapper.style.display = 'none';
+                inputText.style.display = 'block';
+                inputFile.value = '';
+                fileName.textContent = '未选择文件';
+                originalFileName = '';
+            }
+        });
+
+        // 监听文件选择
+        inputFile.addEventListener('change', function () {
+            if (this.files.length > 0) {
+                originalFileName = this.files[0].name;
+                fileName.textContent = originalFileName;
+            } else {
+                fileName.textContent = '未选择文件';
+                originalFileName = '';
+            }
+        });
+
+        // 监听输出编码变化
+        outputEncoding.addEventListener('change', function () {
+            if (plainValue) {
+                // 如果是解码模式且有解码结果，则根据选择的输出编码重新编码
+                if (this.value === 'plain') {
+                    outputText.value = plainValue;
+                } else {
+                    outputText.value = encodeWithMethod(plainValue, this.value);
+                }
+                updateDownloadButton();
+            }
+        });
+
+        outputText.addEventListener('dblclick', async () => {
+            try {
+                if (!outputText.value) {
+                    showToast(`复制失败，输出框为空`, "error");
+                    return;
+                }
+                // 选中全部文本（兼容移动端）
+                outputText.select();
+                outputText.setSelectionRange(0, outputText.value.length);
+
+                // 优先使用现代 Clipboard API
+                if (navigator.clipboard) {
+                    await navigator.clipboard.writeText(outputText.value);
+                } else {
+                    // 兼容旧版浏览器
+                    if (!document.execCommand('copy')) {
+                        throw new Error('复制命令不被支持');
+                    }
+                }
+                // 视觉反馈
+                showToast("复制成功", "success");
+            } catch (err) {
+                showToast(`复制失败 ${err.message}`, "error");
+            }
+        });
+
+        // Base16 (Hex) 编码函数
+        function base16Encode(input) {
+            return Array.from(new TextEncoder().encode(input), byte =>
+                byte.toString(16).padStart(2, '0').toUpperCase()
+            ).join('');
+        }
+
+        // Base16 (Hex) 解码函数
+        function base16Decode(input) {
+            // 移除所有空白字符
+            const cleanInput = input.replace(/\s/g, '');
+
+            // 检查输入是否为有效的十六进制字符串
+            if (!/^[0-9A-Fa-f]*$/.test(input)) {
+                throw new Error('输入包含无效的十六进制字符');
+            }
+
+            // 检查输入长度是否为偶数
+            if (input.length % 2 !== 0) {
+                throw new Error('十六进制字符串长度必须为偶数');
+            }
+
+            const bytes = new Uint8Array(cleanInput.length / 2);
+            for (let i = 0; i < cleanInput.length; i += 2) {
+                bytes[i / 2] = parseInt(cleanInput.substr(i, 2), 16);
+            }
+
+            // 根据输出编码返回结果
+            return new TextDecoder('utf-8').decode(bytes);
+        }
+
+        // Base64 编码函数
+        function base64Encode(input) {
+            return btoa(String.fromCharCode(...new TextEncoder().encode(input)));
+        }
+
+        // Base64 解码函数
+        function base64Decode(input) {
+            try {
+                return new TextDecoder().decode(Uint8Array.from(atob(input.trim()), (m) => m.charCodeAt(0)));
+            } catch (e) {
+                throw new Error('输入不是有效的Base64编码');
+            }
+        }
+
+        // URL 编码函数
+        function urlEncode(input) {
+            return encodeURIComponent(input);
+        }
+
+        // URL 解码函数
+        function urlDecode(input) {
+            try {
+                return decodeURIComponent(input);
+            } catch (e) {
+                throw new Error('输入不是有效的URL编码');
+            }
+        }
+
+        // 根据编码方法进行编码
+        function encodeWithMethod(input, method) {
+            switch (method) {
+                case 'base16':
+                    return base16Encode(input);
+                case 'base64':
+                    return base64Encode(input);
+                case 'url':
+                    return urlEncode(input);
+                case 'unicode':
+                    return unicodeEncode(input);
+                default:
+                    return input;
+            }
+        }
+
+        // 根据编码方法进行解码
+        function decodeWithMethod(input, method) {
+            switch (method) {
+                case 'base16':
+                    return base16Decode(input);
+                case 'base64':
+                    return base64Decode(input);
+                case 'url':
+                    return urlDecode(input);
+                case 'utf8':
+                    return utf8Decode(input);
+                case 'unicode':
+                    return unicodeDecode(input);
+                default:
+                    return input;
+            }
+        }
+
+        function showToast(message, type) {
+            let color = '#333';
+            if (type === "success") {
+                color = '#4CAF50';
+            } else if (type === "error") {
+                color = '#f44336';
+            }
+            const toast = document.createElement('div');
+            toast.style = `position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:${color}; color:white; padding:12px 24px; border-radius:4px; z-index:1000;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // 显示错误信息
+        function showError(message) {
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 10000);
+        }
+
+        // 处理文件输入
+        function handleFileInput(callback) {
+            const file = inputFile.files[0];
+            if (!file) {
+                showError('请选择一个文件');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const content = e.target.result;
+                callback(content);
+            };
+            reader.onerror = function () {
+                showError('读取文件时出错');
+            };
+            reader.readAsText(file);
+        }
+
+        // 更新下载按钮
+        function updateDownloadButton() {
+            downloadBtn.style.display = 'inline-block';
+
+            // 设置下载文件名
+            let downloadFileName = 'output';
+
+            if (originalFileName) {
+                // 移除文件扩展名
+                const lastDotIndex = originalFileName.lastIndexOf('.');
+                const baseName = lastDotIndex !== -1 ? originalFileName.substring(0, lastDotIndex) : originalFileName;
+                const extension = lastDotIndex !== -1 ? originalFileName.substring(lastDotIndex) : '';
+
+                // 检查文件名是否已经以编码方式结尾
+                const encodingSuffix = '_' + outputEncoding.value;
+                const lowerBaseName = baseName.toLowerCase();
+
+                if (outputEncoding.value === 'plain') {
+                    downloadFileName = baseName + '_de' + extension;
+                } else if (!lowerBaseName.endsWith('_' + outputEncoding.value.toLowerCase())) {
+                    downloadFileName = baseName + '_' + outputEncoding.value + extension;
+                } else {
+                    downloadFileName = baseName + extension;
+                }
+            } else {
+                // 没有原始文件名
+                if (outputEncoding.value === 'plain') {
+                    downloadFileName = 'decoded.txt';
+                } else {
+                    downloadFileName = 'decoded_' + outputEncoding.value + '.txt';
+                }
+            }
+
+            downloadBtn.download = downloadFileName;
+
+            // 创建Blob并设置下载链接
+            const blob = new Blob([outputText.value], { type: 'text/plain' });
+            downloadBtn.href = URL.createObjectURL(blob);
+        }
+
+        // 编码按钮点击事件
+        encodeBtn.addEventListener('click', function () {
+            alert.style.display = 'none';
+            currentMode = 'encode';
+            plainValue = '';
+
+            // 设置编码按钮为活动状态
+            this.classList.add('btn-primary');
+            this.classList.remove('btn-secondary');
+            decodeBtn.classList.add('btn-secondary');
+            decodeBtn.classList.remove('btn-primary');
+
+            const processInput = (input) => {
+                if (!input) {
+                    showError("必须有输入");
+                    return;
+                }
+                try {
+                    const encoded = encodeWithMethod(input, outputEncoding.value);
+                    outputText.value = encoded;
+                    updateDownloadButton();
+                } catch (error) {
+                    showError(error.message);
+                }
+            };
+
+            if (useFileInput.checked) {
+                handleFileInput(processInput);
+            } else {
+                processInput(inputText.value);
+            }
+        });
+
+        // 解码按钮点击事件
+        decodeBtn.addEventListener('click', function () {
+            alert.style.display = 'none';
+            currentMode = 'decode';
+            plainValue = '';
+
+            // 设置解码按钮为活动状态
+            this.classList.add('btn-primary');
+            this.classList.remove('btn-secondary');
+            encodeBtn.classList.add('btn-secondary');
+            encodeBtn.classList.remove('btn-primary');
+
+            const processInput = (input) => {
+                try {
+                    // 先解码输入
+                    plainValue = decodeWithMethod(input, inputEncoding.value);
+
+                    // 根据输出编码选项决定是否需要再次编码
+                    if (outputEncoding.value === 'plain') {
+                        outputText.value = plainValue;
+                    } else {
+                        outputText.value = encodeWithMethod(plainValue, outputEncoding.value);
+                    }
+
+                    updateDownloadButton();
+                } catch (error) {
+                    showError(error.message);
+                }
+            };
+
+            if (useFileInput.checked) {
+                handleFileInput(processInput);
+            } else {
+                processInput(inputText.value);
+            }
+        });
+    </script>
+</body>
+
+</html>
